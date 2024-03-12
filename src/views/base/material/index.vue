@@ -87,7 +87,11 @@
       <el-table-column label="物料名称" align="center" prop="materialName" />
       <el-table-column label="物料规格" align="center" prop="materialSpec" />
       <el-table-column label="物料单位字典码" align="center" prop="materialUnitCode" />
-      <el-table-column label="物料单位名称" align="center" prop="materialUnitName" />
+      <el-table-column label="物料单位名称" align="center" prop="materialUnitName" >
+        <template #default="scope">
+          <dict-tag :options="material_unit" :value="scope.row.materialUnitCode" />
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
@@ -117,9 +121,26 @@
 <!--        <el-form-item label="物料单位字典码" prop="materialUnitCode">
           <el-input v-model="form.materialUnitCode" placeholder="请输入物料单位字典码" />
         </el-form-item>-->
-        <el-form-item label="物料单位名称" prop="materialUnitName">
-          <el-input v-model="form.materialUnitName" placeholder="请输入物料单位名称" />
+<!--        <el-form-item label="物料单位" prop="materialUnitName">
+&lt;!&ndash;          <el-input v-model="form.materialUnitName" placeholder="请选择物料单位名称" />&ndash;&gt;
+&lt;!&ndash;          <el-option
+              v-for="dict in material_unit"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+          ></el-option>&ndash;&gt;
+        </el-form-item>-->
+        <el-form-item label="物料单位" prop="materialUnitName">
+          <el-select v-model="form.materialUnitCode" placeholder="请选择">
+            <el-option
+                v-for="dict in material_unit"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
+
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -138,6 +159,8 @@
 import { listMaterial, getMaterial, delMaterial, addMaterial, updateMaterial } from "@/api/base/material";
 
 const { proxy } = getCurrentInstance();
+
+const { material_unit } = proxy.useDict("material_unit");
 
 const materialList = ref([]);
 const open = ref(false);

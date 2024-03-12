@@ -145,6 +145,21 @@ export const dynamicRoutes = [
     ]
   },
   {
+    path: '/base/project/user',
+    component: Layout,
+    hidden: true,
+    permissions: ['tool:gen:edit'],
+    children: [
+      {
+        path: 'index/:id(\\d+)',
+        component: () => import('@/views/base/project/user/index'),
+        name: 'projectUserEdit',
+        // meta: { title: '修改项目干系人', activeMenu: '/base/project' }
+        meta: { title: '修改项目干系人', activeMenu: '/material/base/project/info'}
+      }
+    ]
+  },
+  {
     path: '/tool/gen-edit',
     component: Layout,
     hidden: true,
@@ -153,11 +168,13 @@ export const dynamicRoutes = [
       {
         path: 'index/:tableId(\\d+)',
         component: () => import('@/views/tool/gen/editTable'),
+        // component: () => import('@/views/base/project/user/index'),
         name: 'GenEdit',
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
+
 ]
 
 const router = createRouter({

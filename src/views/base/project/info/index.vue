@@ -75,6 +75,11 @@
 
     <el-table v-loading="loading" :data="infoList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="序号" type="index" width="50" align="center">
+        <template #default="scope">
+          <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="${comment}" align="center" prop="id" />
       <el-table-column label="项目名称" align="center" prop="projectName" />
       <el-table-column label="项目地址" align="center" prop="projectAddress" />
@@ -86,8 +91,9 @@
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:info:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:info:remove']">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['project:info:edit']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['project:info:remove']">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleOpenUser(scope.row)" v-hasPermi="['project:info:user']">项目干系人</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -133,6 +139,7 @@
 
 <script setup name="Info">
 import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/base/info";
+import router from "@/router/index.js";
 
 const { proxy } = getCurrentInstance();
 
@@ -228,6 +235,20 @@ function handleUpdate(row) {
     open.value = true;
     title.value = "修改项目基础信息";
   });
+}
+
+/** 修改按钮操作 */
+function handleOpenUser(row) {
+/*  reset();
+  const _id = row.id || ids.value
+  getInfo(_id).then(response => {
+    form.value = response.data;
+    open.value = true;
+    title.value = "修改项目基础信息";
+  });*/
+  const id = row.id || ids.value[0];
+  router.push({ path: "/base/project/user/index/"+id, query: { pageNum: queryParams.value.pageNum } });
+  // router.push({ path: "/tool/gen-edit/index/" + id, query: { pageNum: queryParams.value.pageNum } });
 }
 
 /** 提交按钮 */

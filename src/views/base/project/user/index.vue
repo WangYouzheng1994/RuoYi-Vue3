@@ -1,22 +1,22 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="项目" prop="projectId">
+    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="110px">
+<!--      <el-form-item label="项目" prop="projectId">
         <el-input
           v-model="queryParams.projectId"
           placeholder="请输入项目"
           clearable
           @keyup.enter="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="干系人id" prop="userId">
+      </el-form-item>-->
+<!--      <el-form-item label="干系人id" prop="userId">
         <el-input
           v-model="queryParams.userId"
           placeholder="请输入干系人id"
           clearable
           @keyup.enter="handleQuery"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="干系人姓名" prop="userName">
         <el-date-picker clearable
           v-model="queryParams.userName"
@@ -33,18 +33,18 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="岗位id" prop="userPostId">
+<!--      <el-form-item label="岗位id" prop="userPostId">
         <el-input
           v-model="queryParams.userPostId"
           placeholder="请输入岗位id"
           clearable
           @keyup.enter="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="干系人联系方式" prop="userPhoneNumber">
+      </el-form-item>-->
+      <el-form-item label="联系方式" prop="userPhoneNumber">
         <el-input
           v-model="queryParams.userPhoneNumber"
-          placeholder="请输入干系人联系方式"
+          placeholder="请输入联系方式"
           clearable
           @keyup.enter="handleQuery"
         />
@@ -52,6 +52,7 @@
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+        <el-button type="primary" icon="Back" @click="close()">返回</el-button>
       </el-form-item>
     </el-form>
 
@@ -150,8 +151,8 @@
         <el-form-item label="岗位id" prop="userPostId">
           <el-input v-model="form.userPostId" placeholder="请输入岗位id" />
         </el-form-item>
-        <el-form-item label="干系人联系方式" prop="userPhoneNumber">
-          <el-input v-model="form.userPhoneNumber" placeholder="请输入干系人联系方式" />
+        <el-form-item label="联系方式" prop="userPhoneNumber">
+          <el-input v-model="form.userPhoneNumber" placeholder="请输入联系方式" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -309,6 +310,11 @@ function handleExport() {
   proxy.download('system/user/export', {
     ...queryParams.value
   }, `user_${new Date().getTime()}.xlsx`)
+}
+
+function close() {
+  // const obj = { path: "/tool/gen", query: { t: Date.now(), pageNum: route.query.pageNum } };
+  proxy.$tab.closeOpenPage({path: "/material/base/project/info"});
 }
 
 getList();
