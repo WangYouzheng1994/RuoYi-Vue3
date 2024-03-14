@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="110px">
       <el-form-item label="物料名称" prop="projectName">
         <el-input
           v-model="queryParams.projectName"
@@ -83,7 +83,7 @@
 
     <el-table v-loading="loading" :data="planList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="${comment}" align="center" prop="id" />
+<!--      <el-table-column label="${comment}" align="center" prop="id" />-->
       <el-table-column label="物料名称" align="center" prop="projectName" />
       <el-table-column label="物料规格" align="center" prop="projectId" />
       <el-table-column label="物料单位字典码" align="center" prop="projectManagerName" />

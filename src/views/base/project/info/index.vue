@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="110px">
       <el-form-item label="项目名称" prop="projectName">
         <el-input
           v-model="queryParams.projectName"
@@ -80,7 +80,7 @@
           <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="${comment}" align="center" prop="id" />
+<!--      <el-table-column label="${comment}" align="center" prop="id" />-->
       <el-table-column label="项目名称" align="center" prop="projectName" />
       <el-table-column label="项目地址" align="center" prop="projectAddress" />
       <el-table-column label="项目启动时间" align="center" prop="projectStartDate" width="180">
@@ -108,7 +108,7 @@
 
     <!-- 添加或修改项目基础信息对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-      <el-form ref="infoRef" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="infoRef" :model="form" :rules="rules" label-width="110px">
         <el-form-item label="项目名称" prop="projectName">
           <el-input v-model="form.projectName" placeholder="请输入项目名称" />
         </el-form-item>

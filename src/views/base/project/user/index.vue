@@ -18,12 +18,21 @@
         />
       </el-form-item>-->
       <el-form-item label="干系人姓名" prop="userName">
-        <el-date-picker clearable
+<!--        <el-date-picker clearable
           v-model="queryParams.userName"
           type="date"
           value-format="YYYY-MM-DD"
           placeholder="请选择干系人姓名">
-        </el-date-picker>
+        </el-date-picker>-->
+        <el-select v-model="queryParams.userName" placeholder="请选择人员" style="width:100%">
+          <el-option
+              v-for="item in userOptions"
+              :key="item.userId"
+              :label="item.userName"
+              :value="item.userId"
+              :disabled="item.status == 1"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="岗位名称" prop="userPostName">
         <el-input
@@ -100,16 +109,16 @@
 
     <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="${comment}" align="center" prop="id" />
-      <el-table-column label="项目" align="center" prop="projectId" />
-      <el-table-column label="干系人id" align="center" prop="userId" />
+<!--      <el-table-column label="${comment}" align="center" prop="id" />-->
+      <el-table-column label="项目" align="center" prop="projectName" />
+<!--      <el-table-column label="干系人id" align="center" prop="userId" />-->
       <el-table-column label="干系人姓名" align="center" prop="userName" width="180">
-        <template #default="scope">
+<!--        <template #default="scope">
           <span>{{ parseTime(scope.row.userName, '{y}-{m}-{d}') }}</span>
-        </template>
+        </template>-->
       </el-table-column>
       <el-table-column label="岗位名称" align="center" prop="userPostName" />
-      <el-table-column label="岗位id" align="center" prop="userPostId" />
+<!--      <el-table-column label="岗位id" align="center" prop="userPostId" />-->
       <el-table-column label="干系人联系方式" align="center" prop="userPhoneNumber" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -130,27 +139,36 @@
 
     <!-- 添加或修改项目干系人信息对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-      <el-form ref="userRef" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="userRef" :model="form" :rules="rules" label-width="110px">
         <el-form-item label="项目" prop="projectId">
-          <el-input v-model="form.projectId" placeholder="请输入项目" />
+          <el-input v-model="form.projectName" disabled/>
         </el-form-item>
-        <el-form-item label="干系人id" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入干系人id" />
+        <el-form-item label="姓名" prop="userName">
+          <el-select value-key="userId" v-model="selectUser" placeholder="请选择人员" style="width:100%">
+            <el-option
+                v-for="item in userOptions"
+                :key="item.userId"
+                :label="item.userName"
+                :value="item"
+                :disabled="item.status == 1"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="干系人姓名" prop="userName">
-          <el-date-picker clearable
-            v-model="form.userName"
-            type="date"
-            value-format="YYYY-MM-DD"
-            placeholder="请选择干系人姓名">
-          </el-date-picker>
+        <el-form-item label="岗位名称" prop="userPostId">
+<!--          <el-input v-model="form.userPostName" placeholder="请输入岗位名称" />-->
+          <el-select value-key="postId" v-model="selectPost" placeholder="请选择" style="width:100%">
+            <el-option
+                v-for="item in postOptions"
+                :key="item.postId"
+                :label="item.postName"
+                :value="item"
+                :disabled="item.status == 1"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="岗位名称" prop="userPostName">
-          <el-input v-model="form.userPostName" placeholder="请输入岗位名称" />
-        </el-form-item>
-        <el-form-item label="岗位id" prop="userPostId">
+<!--        <el-form-item label="岗位id" prop="userPostId">
           <el-input v-model="form.userPostId" placeholder="请输入岗位id" />
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="联系方式" prop="userPhoneNumber">
           <el-input v-model="form.userPhoneNumber" placeholder="请输入联系方式" />
         </el-form-item>
@@ -169,8 +187,12 @@
 </template>
 
 <script setup name="User">
-import { listUser, getUser, delUser, addUser, updateUser } from "@/api/base/user";
+import { listProjectUser, getProjectUser, delProjectUser, addProjectUser, updateProjectUser } from "@/api/base/user";
+import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/base/info";
+import {getUser, listUser} from "@/api/system/user";
 
+const route = useRoute();
+const projectId = route.params && route.params.id;
 const { proxy } = getCurrentInstance();
 
 const userList = ref([]);
@@ -182,6 +204,16 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
+const selectUser = ref({});
+const selectPost = ref({});
+
+// 岗位信息
+const postOptions = ref([]);
+const roleOptions = ref([]);
+// 所属项目信息
+const projectInfo = ref();
+// 人员下拉
+const userOptions = ref([])
 
 const data = reactive({
   form: {},
@@ -204,7 +236,7 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询项目干系人信息列表 */
 function getList() {
   loading.value = true;
-  listUser(queryParams.value).then(response => {
+  listProjectUser(queryParams.value).then(response => {
     userList.value = response.rows;
     total.value = response.total;
     loading.value = false;
@@ -231,8 +263,12 @@ function reset() {
     createTime: null,
     updateBy: null,
     updateTime: null,
-    remark: null
+    remark: null,
+    user: null,
   };
+  selectUser.value = null;
+  selectPost.value = null;
+
   proxy.resetForm("userRef");
 }
 
@@ -257,19 +293,22 @@ function handleSelectionChange(selection) {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  reset();
+  initInfo();
   open.value = true;
   title.value = "添加项目干系人信息";
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row) {
-  reset();
+async function handleUpdate(row) {
+  console.log("11")
+  await initInfo();
   const _id = row.id || ids.value
-  getUser(_id).then(response => {
-    form.value = response.data;
+  await getProjectUser(_id).then(response => {
     open.value = true;
     title.value = "修改项目干系人信息";
+    form.value = response.data;
+    selectUser.value = {"userId": form.value.userId};
+    selectPost.value = {"postId": form.value.userPostId};
   });
 }
 
@@ -277,14 +316,23 @@ function handleUpdate(row) {
 function submitForm() {
   proxy.$refs["userRef"].validate(valid => {
     if (valid) {
+      // 准备数据
+      form.value.userId = selectUser.value.userId;
+      form.value.userName = selectUser.value.userName;
+      form.value.projectId = projectInfo.value.id;
+      form.value.projectName = projectInfo.value.projectName;
+
+      form.value.userPostId = selectPost.value.postId;
+      form.value.userPostName = selectPost.value.postName;
+
       if (form.value.id != null) {
-        updateUser(form.value).then(response => {
+        updateProjectUser(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
           getList();
         });
       } else {
-        addUser(form.value).then(response => {
+        addProjectUser(form.value).then(response => {
           proxy.$modal.msgSuccess("新增成功");
           open.value = false;
           getList();
@@ -298,7 +346,7 @@ function submitForm() {
 function handleDelete(row) {
   const _ids = row.id || ids.value;
   proxy.$modal.confirm('是否确认删除项目干系人信息编号为"' + _ids + '"的数据项？').then(function() {
-    return delUser(_ids);
+    return delProjectUser(_ids);
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");
@@ -316,6 +364,28 @@ function close() {
   // const obj = { path: "/tool/gen", query: { t: Date.now(), pageNum: route.query.pageNum } };
   proxy.$tab.closeOpenPage({path: "/material/base/project/info"});
 }
+
+async function initInfo() {
+  reset();
+  // 获取岗位信息
+   getUser().then(response => {
+    postOptions.value = response.posts;
+    roleOptions.value = response.roles;
+  });
+
+  // 获取项目信息
+  getInfo(projectId).then(res => {
+    projectInfo.value = res.data;
+
+    data.form.projectName = res.data.projectName;
+    data.form.projectId = res.data.projectId;
+  });
+  // 获取人员清单
+  await listUser({pageNum: 1, pageSize: 200}).then(response => {
+    userOptions.value = response && response.rows;
+  });
+}
+
 
 getList();
 </script>

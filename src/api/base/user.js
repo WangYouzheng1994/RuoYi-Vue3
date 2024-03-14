@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 查询项目干系人信息列表
-export function listUser(query) {
+export function listProjectUser(query) {
   return request({
     url: '/project/user/list',
     method: 'get',
@@ -10,7 +10,7 @@ export function listUser(query) {
 }
 
 // 查询项目干系人信息详细
-export function getUser(id) {
+export function getProjectUser(id) {
   return request({
     url: '/project/user/' + id,
     method: 'get'
@@ -18,7 +18,7 @@ export function getUser(id) {
 }
 
 // 新增项目干系人信息
-export function addUser(data) {
+export function addProjectUser(data) {
   return request({
     url: '/project/user',
     method: 'post',
@@ -27,7 +27,7 @@ export function addUser(data) {
 }
 
 // 修改项目干系人信息
-export function updateUser(data) {
+export function updateProjectUser(data) {
   return request({
     url: '/project/user',
     method: 'put',
@@ -36,7 +36,7 @@ export function updateUser(data) {
 }
 
 // 删除项目干系人信息
-export function delUser(id) {
+export function delProjectUser(id) {
   return request({
     url: '/project/user/' + id,
     method: 'delete'
