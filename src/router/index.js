@@ -160,6 +160,22 @@ export const dynamicRoutes = [
     ]
   },
   {
+    path: '/material/plan/',
+    component: Layout,
+    hidden: true,
+    permissions: ['tool:gen:edit'],
+    children: [
+      {
+        path: 'planDetail/:id(\\d+)',
+        component: () => import('@/views/material/plan/planDetail'),
+        name: 'materialPlanDetail',
+        // meta: { title: '修改项目干系人', activeMenu: '/base/project' }
+        meta: { title: '修改项目干系人', activeMenu: '/material/plan/'}
+      }
+    ]
+  },
+
+  {
     path: '/tool/gen-edit',
     component: Layout,
     hidden: true,

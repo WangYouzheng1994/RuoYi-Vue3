@@ -188,7 +188,7 @@
 
 <script setup name="User">
 import { listProjectUser, getProjectUser, delProjectUser, addProjectUser, updateProjectUser } from "@/api/base/user";
-import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/base/info";
+import { listProjectInfo, getProjectInfo, delProjectInfo, addProjectInfo, updateProjectInfo } from "@/api/base/info";
 import {getUser, listUser} from "@/api/system/user";
 
 const route = useRoute();
@@ -374,7 +374,7 @@ async function initInfo() {
   });
 
   // 获取项目信息
-  getInfo(projectId).then(res => {
+  getProjectInfo(projectId).then(res => {
     projectInfo.value = res.data;
 
     data.form.projectName = res.data.projectName;

@@ -138,7 +138,7 @@
 </template>
 
 <script setup name="Info">
-import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/base/info";
+import { listProjectInfo, getProjectInfo, delProjectInfo, addProjectInfo, updateProjectInfo } from "@/api/base/info";
 import router from "@/router/index.js";
 
 const { proxy } = getCurrentInstance();
@@ -171,7 +171,7 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询项目基础信息列表 */
 function getList() {
   loading.value = true;
-  listInfo(queryParams.value).then(response => {
+  listProjectInfo(queryParams.value).then(response => {
     infoList.value = response.rows;
     total.value = response.total;
     loading.value = false;
@@ -230,7 +230,7 @@ function handleAdd() {
 function handleUpdate(row) {
   reset();
   const _id = row.id || ids.value
-  getInfo(_id).then(response => {
+  getProjectInfo(_id).then(response => {
     form.value = response.data;
     open.value = true;
     title.value = "修改项目基础信息";
@@ -256,13 +256,13 @@ function submitForm() {
   proxy.$refs["infoRef"].validate(valid => {
     if (valid) {
       if (form.value.id != null) {
-        updateInfo(form.value).then(response => {
+        updateProjectInfo(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
           getList();
         });
       } else {
-        addInfo(form.value).then(response => {
+        addProjectInfo(form.value).then(response => {
           proxy.$modal.msgSuccess("新增成功");
           open.value = false;
           getList();
@@ -276,7 +276,7 @@ function submitForm() {
 function handleDelete(row) {
   const _ids = row.id || ids.value;
   proxy.$modal.confirm('是否确认删除项目基础信息编号为"' + _ids + '"的数据项？').then(function() {
-    return delInfo(_ids);
+    return delProjectInfo(_ids);
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");

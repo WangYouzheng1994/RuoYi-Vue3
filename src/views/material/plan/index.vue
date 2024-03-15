@@ -1,34 +1,36 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="110px">
-      <el-form-item label="物料名称" prop="projectName">
+<!--      <el-form-item label="项目名称" prop="projectName">
         <el-input
           v-model="queryParams.projectName"
-          placeholder="请输入物料名称"
+          placeholder="请输入项目名称"
           clearable
           @keyup.enter="handleQuery"
         />
-      </el-form-item>
-      <el-form-item label="物料规格" prop="projectId">
-        <el-input
+      </el-form-item>-->
+      <el-form-item label="所属项目" prop="projectId">
+<!--        <el-input
           v-model="queryParams.projectId"
-          placeholder="请输入物料规格"
+          placeholder="请输入所属项目"
           clearable
           @keyup.enter="handleQuery"
-        />
+        />-->
+        <el-select clearable v-model="queryParams.projectId" placeholder="请选择项目" style="width:100%" @keyup.enter="handleQuery">
+          <el-option
+              v-for="item in projectOptions"
+              :key="item.id"
+              :label="item.projectName"
+              :value="item.id"
+              :disabled="item.status == 1"
+          ></el-option>
+        </el-select>
+
       </el-form-item>
-      <el-form-item label="物料单位字典码" prop="projectManagerName">
+      <el-form-item label="要货计划名称" prop="planName">
         <el-input
-          v-model="queryParams.projectManagerName"
-          placeholder="请输入物料单位字典码"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="物料单位名称" prop="projectManagerId">
-        <el-input
-          v-model="queryParams.projectManagerId"
-          placeholder="请输入物料单位名称"
+          v-model="queryParams.planName"
+          placeholder="请输入要货计划名称"
           clearable
           @keyup.enter="handleQuery"
         />
@@ -83,11 +85,11 @@
 
     <el-table v-loading="loading" :data="planList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-<!--      <el-table-column label="${comment}" align="center" prop="id" />-->
-      <el-table-column label="物料名称" align="center" prop="projectName" />
-      <el-table-column label="物料规格" align="center" prop="projectId" />
-      <el-table-column label="物料单位字典码" align="center" prop="projectManagerName" />
-      <el-table-column label="物料单位名称" align="center" prop="projectManagerId" />
+<!--      <el-table-column label="" align="center" prop="id" />-->
+      <el-table-column label="项目名称" align="center" prop="projectName" />
+<!--      <el-table-column label="所属项目" align="center" prop="projectId" />-->
+      <el-table-column label="要货计划名称" align="center" prop="planName" />
+      <el-table-column label="配送完成比例" align="center" prop="complationRate"/>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
@@ -107,18 +109,25 @@
 
     <!-- 添加或修改要货计划对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-      <el-form ref="planRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="物料名称" prop="projectName">
-          <el-input v-model="form.projectName" placeholder="请输入物料名称" />
+      <el-form ref="planRef" :model="form" :rules="rules" label-width="110px">
+<!--        <el-form-item label="项目名称" prop="projectName">
+          <el-input v-model="form.projectName" placeholder="请输入项目名称" />
+        </el-form-item>-->
+        <el-form-item label="所属项目" prop="projectId">
+<!--          <el-input v-model="form.projectId" placeholder="请输入所属项目" />-->
+
+          <el-select v-model="form.projectId" placeholder="请选择项目" style="width:100%">
+            <el-option
+                v-for="item in projectOptions"
+                :key="item.id"
+                :label="item.projectName"
+                :value="item.id"
+                :disabled="item.status == 1"
+            ></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="物料规格" prop="projectId">
-          <el-input v-model="form.projectId" placeholder="请输入物料规格" />
-        </el-form-item>
-        <el-form-item label="物料单位字典码" prop="projectManagerName">
-          <el-input v-model="form.projectManagerName" placeholder="请输入物料单位字典码" />
-        </el-form-item>
-        <el-form-item label="物料单位名称" prop="projectManagerId">
-          <el-input v-model="form.projectManagerId" placeholder="请输入物料单位名称" />
+        <el-form-item label="要货计划名称" prop="planName">
+          <el-input v-model="form.planName" placeholder="请输入要货计划名称" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -135,7 +144,9 @@
 </template>
 
 <script setup name="Plan">
-import { listPlan, getPlan, delPlan, addPlan, updatePlan } from "@/api/material/plan";
+import { listMaterialPlan, getMaterialPlan, delMaterialPlan, addMaterialPlan, updateMaterialPlan } from "@/api/material/plan";
+import { listProjectInfo, getProjectInfo, delProjectInfo, addProjectInfo, updateProjectInfo } from "@/api/base/info";
+import router from "@/router/index.js";
 
 const { proxy } = getCurrentInstance();
 
@@ -149,6 +160,9 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
 
+// 项目信息下拉
+const projectOptions = ref([]);
+
 const data = reactive({
   form: {},
   queryParams: {
@@ -156,8 +170,7 @@ const data = reactive({
     pageSize: 10,
     projectName: null,
     projectId: null,
-    projectManagerName: null,
-    projectManagerId: null,
+    planName: null,
   },
   rules: {
   }
@@ -168,7 +181,7 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询要货计划列表 */
 function getList() {
   loading.value = true;
-  listPlan(queryParams.value).then(response => {
+  listMaterialPlan(queryParams.value).then(response => {
     planList.value = response.rows;
     total.value = response.total;
     loading.value = false;
@@ -187,8 +200,7 @@ function reset() {
     id: null,
     projectName: null,
     projectId: null,
-    projectManagerName: null,
-    projectManagerId: null,
+    planName: null,
     createBy: null,
     createTime: null,
     updateBy: null,
@@ -225,14 +237,20 @@ function handleAdd() {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row) {
+/*function handleUpdate(row) {
   reset();
   const _id = row.id || ids.value
-  getPlan(_id).then(response => {
+  getMaterialPlan(_id).then(response => {
     form.value = response.data;
     open.value = true;
     title.value = "修改要货计划";
   });
+}*/
+
+/** 修改按钮操作 */
+function handleUpdate(row) {
+  const tableId = row.id || ids.value[0];
+  router.push({ path: "/material/plan/planDetail/" + tableId, query: { pageNum: queryParams.value.pageNum } });
 }
 
 /** 提交按钮 */
@@ -240,13 +258,13 @@ function submitForm() {
   proxy.$refs["planRef"].validate(valid => {
     if (valid) {
       if (form.value.id != null) {
-        updatePlan(form.value).then(response => {
+        updateMaterialPlan(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
           getList();
         });
       } else {
-        addPlan(form.value).then(response => {
+        addMaterialPlan(form.value).then(response => {
           proxy.$modal.msgSuccess("新增成功");
           open.value = false;
           getList();
@@ -260,7 +278,7 @@ function submitForm() {
 function handleDelete(row) {
   const _ids = row.id || ids.value;
   proxy.$modal.confirm('是否确认删除要货计划编号为"' + _ids + '"的数据项？').then(function() {
-    return delPlan(_ids);
+    return delMaterialPlan(_ids);
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");
@@ -274,5 +292,17 @@ function handleExport() {
   }, `plan_${new Date().getTime()}.xlsx`)
 }
 
+/**
+ * 初始化
+ */
+function init() {
+  listProjectInfo({
+    pageNum: 1,
+    pageSize: 100}).then(response => {
+    projectOptions.value = response.rows;
+  });
+}
+
+init();
 getList();
 </script>

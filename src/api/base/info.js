@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 查询项目基础信息列表
-export function listInfo(query) {
+export function listProjectInfo(query) {
   return request({
     url: '/project/info/list',
     method: 'get',
@@ -10,7 +10,7 @@ export function listInfo(query) {
 }
 
 // 查询项目基础信息详细
-export function getInfo(id) {
+export function getProjectInfo(id) {
   return request({
     url: '/project/info/' + id,
     method: 'get'
@@ -18,7 +18,7 @@ export function getInfo(id) {
 }
 
 // 新增项目基础信息
-export function addInfo(data) {
+export function addProjectInfo(data) {
   return request({
     url: '/project/info',
     method: 'post',
@@ -27,7 +27,7 @@ export function addInfo(data) {
 }
 
 // 修改项目基础信息
-export function updateInfo(data) {
+export function updateProjectInfo(data) {
   return request({
     url: '/project/info',
     method: 'put',
@@ -36,7 +36,7 @@ export function updateInfo(data) {
 }
 
 // 删除项目基础信息
-export function delInfo(id) {
+export function delProjectInfo(id) {
   return request({
     url: '/project/info/' + id,
     method: 'delete'
