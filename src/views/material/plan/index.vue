@@ -83,13 +83,19 @@
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="planList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="planList" @selection-change="handleSelectionChange" table-layout="auto">
       <el-table-column type="selection" width="55" align="center" />
 <!--      <el-table-column label="" align="center" prop="id" />-->
       <el-table-column label="项目名称" align="center" prop="projectName" />
 <!--      <el-table-column label="所属项目" align="center" prop="projectId" />-->
       <el-table-column label="要货计划名称" align="center" prop="planName" />
       <el-table-column label="配送完成比例" align="center" prop="complationRate"/>
+      <el-table-column label="提报人" align="center" prop="createBy"/>
+      <el-table-column label="提报状态" align="center" prop="commitStatus">
+        <template #default="scope">
+          <dict-tag :options="material_plan_commit" :value="scope.row.commitStatus" />
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
@@ -146,10 +152,12 @@
 <script setup name="Plan">
 import { listMaterialPlan, getMaterialPlan, delMaterialPlan, addMaterialPlan, updateMaterialPlan } from "@/api/material/plan";
 import { listProjectInfo, getProjectInfo, delProjectInfo, addProjectInfo, updateProjectInfo } from "@/api/base/info";
+
 import router from "@/router/index.js";
 
 const { proxy } = getCurrentInstance();
 
+const { material_plan_commit } = proxy.useDict("material_plan_commit");
 const planList = ref([]);
 const open = ref(false);
 const loading = ref(true);

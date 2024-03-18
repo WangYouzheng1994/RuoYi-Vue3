@@ -116,3 +116,9 @@ https://yiming_chang.gitee.io/vue-pure-admin/#/welcome
 https://github.com/youlaitech/vue3-element-admin
 
 https://github.com/GeekQiaQia/vue3.0-template-admin?tab=readme-ov-file
+
+
+https://blog.csdn.net/Kratial/article/details/134449445
+
+defineProps
+https://static.kancloud.cn/cyyspring/vue3/2748005

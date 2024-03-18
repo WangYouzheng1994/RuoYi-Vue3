@@ -8,14 +8,15 @@
           <base-info-form ref="baseInfo" :info="info" :projectOptions="projectOptions" />
         </el-tab-pane>
         <el-tab-pane label="计划详情" name="materialDetailTab">
-          <material-detail ref="materialDetails"/>
+          <material-detail ref="materialDetails" :planId="planId"/>
         </el-tab-pane>
       </el-tabs>
       <el-form label-width="100px">
         <div style="text-align: center;margin-left:-100px;margin-top:10px;">
-          <el-button type="primary" @click="submitForm()">提报计划</el-button>
-          <el-button type="primary" @click="submitForm()">保存</el-button>
+          <el-button type="primary" @click="submitForm('submit')">提报计划</el-button>
+          <el-button type="primary" @click="submitForm('save')">保存</el-button>
           <el-button @click="close()">返回</el-button>
+          <el-button type="info">打印要货计划</el-button>
         </div>
       </el-form>
     </el-card>
@@ -25,13 +26,15 @@
 import baseInfoForm from "./baseInfoForm.vue";
 import materialDetail from './materialDetail.vue'
 import {listProjectInfo} from "@/api/base/info.js";
-
+import {getMaterialPlan, updateMaterialPlan} from "@/api/material/plan.js";
 
 const { proxy } = getCurrentInstance();
 const route = useRoute();
+const planId = route.params && route.params.id;
 
 const activeName = ref("baseTab");
 const info = ref({});
+// const materialDetails = ref(null);
 const projectOptions = ref([])
 
 function init() {
@@ -40,10 +43,54 @@ function init() {
     pageSize: 100}).then(response => {
     projectOptions.value = response.rows;
   });
+
+  // 更新回显~
+  if (planId) {
+    getMaterialPlan(planId).then(res => {
+      info.value = res.data;
+    });
+  }
 }
 
-function submitForm() {
+function submitForm(type) {
+  const submitType = type;
 
+  const baseForm = proxy.$refs.baseInfo.$refs.planFormRef;
+  const detailTable = proxy.$refs.materialDetails.$refs.detailTableRef.data;
+
+  Promise.all([baseForm].map(getFormPromise)).then((res) => {
+    const validateResult = res.every(item => !!item);
+
+    if (validateResult) {
+      const planInfo = Object.assign({}, info.value);
+      let detailList = Object.assign([], toRaw(detailTable));
+      detailList.forEach(i => {
+        if (i.materialName) {
+          let materialInfo = i.materialName;
+          i.materialName = materialInfo.materialName;
+          i.materialSpec = materialInfo.materialSpec;
+          i.materialUnitCode = materialInfo.materialUnitCode;
+          i.materialUnitName = materialInfo.materialUnitName;
+        }
+      })
+
+      if (submitType == 'submit' && !detailList.length) {
+        proxy.$modal.msgError("当前提报的计划没有任何要货明细！");
+        return;
+      }
+
+      planInfo.detailList = detailList;
+      updateMaterialPlan(planInfo).then(res => {
+        proxy.$modal.msgSuccess(res.msg);
+        if (res.code === 200) {
+          close();
+        }
+      });
+    } else {
+      activeName.value = "baseTab";
+      proxy.$modal.msgError("表单校验未通过，请重新检查提交内容");
+    }
+  });
 }
 
 function close() {
@@ -51,7 +98,17 @@ function close() {
   proxy.$tab.closeOpenPage(obj);
 }
 
-init();
+function getFormPromise(form) {
+  return new Promise(resolve => {
+    form.validate(res => {
+      resolve(res);
+    });
+  });
+}
+onMounted(() => {
+  init();
+});
+
 
 </script>
 <style scoped lang="scss">

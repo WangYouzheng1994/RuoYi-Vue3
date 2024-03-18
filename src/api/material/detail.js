@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询要货计划明细列表
 export function listMaterialPlanDetail(query) {
   return request({
-    url: '/material/plan/detaillist',
+    url: '/material/plan/detail/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listMaterialPlanDetail(query) {
 // 查询要货计划明细详细
 export function getMaterialPlanDetail(id) {
   return request({
-    url: '/material/plan/detail' + id,
+    url: '/material/plan/detail/' + id,
     method: 'get'
   })
 }
@@ -38,7 +38,7 @@ export function updateMaterialPlanDetail(data) {
 // 删除要货计划明细
 export function delMaterialPlanDetail(id) {
   return request({
-    url: '/material/plan/detail' + id,
+    url: '/material/plan/detail/' + id,
     method: 'delete'
   })
 }
