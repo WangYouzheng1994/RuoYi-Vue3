@@ -112,9 +112,8 @@ function submitForm(type) {
       planInfo.submitType = submitType;
 
       if (planId) {
-        planInfo.planId = planId;
+        planInfo.id = parseInt(planId);
         updateMaterialPlan(planInfo).then(res => {
-          proxy.$modal.msgSuccess(res.msg);
           if (res.code === 200) {
             proxy.$modal.msgSuccess("操作成功");
             close();
