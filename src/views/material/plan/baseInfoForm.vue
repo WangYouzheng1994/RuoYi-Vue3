@@ -10,7 +10,7 @@ let definePropsObj = defineProps({
 });
 
 const rules = ref({
-  projectId: [{ required: true, message: "请选择所属项目", trigger: "blur" }],
+  project: [{ required: true, message: "请选择所属项目", trigger: "blur" }],
   planName: [{ required: true, message: "请录入计划名称", trigger: "blur" }],
   /*email: [{ required: true, message: "邮箱地址不能为空", trigger: "blur" }, { type: "email", message: "请输入正确的邮箱地址", trigger: ["blur", "change"] }],
   phonenumber: [{ required: true, message: "手机号码不能为空", trigger: "blur" }, { pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/, message: "请输入正确的手机号码", trigger: "blur" }],*/
@@ -21,13 +21,13 @@ console.log(definePropsObj.projectOptions);
 
 <template>
   <el-form ref="planFormRef" :model="info" :rules="rules" label-width="110px">
-    <el-form-item label="所属项目" prop="projectId">
-      <el-select v-model="info.projectId" placeholder="请选择项目" style="width:100%">
+    <el-form-item label="所属项目" prop="project">
+      <el-select value-key="id" v-model="info.project" placeholder="请选择项目" style="width:100%" filterable>
         <el-option
             v-for="item in projectOptions"
             :key="item.id"
             :label="item.projectName"
-            :value="item.id"
+            :value="item"
             :disabled="item.status == 1"
         ></el-option>
       </el-select>

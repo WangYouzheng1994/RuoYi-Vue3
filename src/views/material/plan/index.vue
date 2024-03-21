@@ -89,8 +89,17 @@
       <el-table-column label="项目名称" align="center" prop="projectName" />
 <!--      <el-table-column label="所属项目" align="center" prop="projectId" />-->
       <el-table-column label="要货计划名称" align="center" prop="planName" />
-      <el-table-column label="配送完成比例" align="center" prop="complationRate"/>
+      <el-table-column label="配送完成比例" align="center" prop="complationRate">
+        <template #default="scopt">
+          <el-progress :text-inside="true" :stroke-width="26" :percentage="70" />
+        </template>
+      </el-table-column>
       <el-table-column label="提报人" align="center" prop="createBy"/>
+      <el-table-column label="计划生成时间" align="center" prop="createTime">
+        <template #default="scope">
+          <span>{{ parseTime(scope.row.createTime) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="提报状态" align="center" prop="commitStatus">
         <template #default="scope">
           <dict-tag :options="material_plan_commit" :value="scope.row.commitStatus" />
@@ -101,6 +110,8 @@
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:plan:edit']">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:plan:remove']">删除</el-button>
+          <el-button link type="primary" icon="DArrowRight" @click="handleOpenInbound(scope.row)" v-hasPermi="['system:plan:remove']">入库</el-button>
+          <el-button link type="primary" icon="DArrowLeft" @click="handleOutbound(scope.row)" v-hasPermi="['system:plan:remove']">出库</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -116,12 +127,7 @@
     <!-- 添加或修改要货计划对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
       <el-form ref="planRef" :model="form" :rules="rules" label-width="110px">
-<!--        <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="form.projectName" placeholder="请输入项目名称" />
-        </el-form-item>-->
         <el-form-item label="所属项目" prop="projectId">
-<!--          <el-input v-model="form.projectId" placeholder="请输入所属项目" />-->
-
           <el-select v-model="form.projectId" placeholder="请选择项目" style="width:100%">
             <el-option
                 v-for="item in projectOptions"
@@ -146,20 +152,29 @@
         </div>
       </template>
     </el-dialog>
+    <!-- 入库 -->
+    <inbound ref="inboundRef" :planId="planId"/>
+    <!-- 出库 -->
+    <outbound ref="outboundRef" :planId="planId"/>
   </div>
 </template>
 
 <script setup name="Plan">
 import { listMaterialPlan, getMaterialPlan, delMaterialPlan, addMaterialPlan, updateMaterialPlan } from "@/api/material/plan";
 import { listProjectInfo, getProjectInfo, delProjectInfo, addProjectInfo, updateProjectInfo } from "@/api/base/info";
+import inbound from './inbound.vue';
 
 import router from "@/router/index.js";
+import Outbound from "@/views/material/plan/outbound.vue";
 
 const { proxy } = getCurrentInstance();
 
 const { material_plan_commit } = proxy.useDict("material_plan_commit");
 const planList = ref([]);
 const open = ref(false);
+const openInbound = ref(false);
+const planId = ref(null);
+const openOutbound = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
 const ids = ref([]);
@@ -239,9 +254,11 @@ function handleSelectionChange(selection) {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  reset();
+  /*reset();
   open.value = true;
-  title.value = "添加要货计划";
+  title.value = "添加要货计划";*/
+
+  router.push({ path: "/material/plan/planDetail" , query: {pageNum: queryParams.value.pageNum}});
 }
 
 /** 修改按钮操作 */
@@ -291,6 +308,27 @@ function handleDelete(row) {
     getList();
     proxy.$modal.msgSuccess("删除成功");
   }).catch(() => {});
+}
+
+/**
+ * 打开入库页面
+ *
+ * @param row
+ */
+function handleOpenInbound(row) {
+  planId.value = row.id;
+  proxy.$refs["inboundRef"].show();
+  // openInbound.value = true;
+}
+
+/**
+ * 打开出库页面
+ *
+ * @param row
+ */
+function handleOutbound(row) {
+  planId.value = row.id;
+  proxy.$refs["outboundRef"].show();
 }
 
 /** 导出按钮操作 */

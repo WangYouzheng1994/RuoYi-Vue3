@@ -26,7 +26,7 @@
 import baseInfoForm from "./baseInfoForm.vue";
 import materialDetail from './materialDetail.vue'
 import {listProjectInfo} from "@/api/base/info.js";
-import {getMaterialPlan, updateMaterialPlan} from "@/api/material/plan.js";
+import {addMaterialPlan, getMaterialPlan, updateMaterialPlan} from "@/api/material/plan.js";
 
 const { proxy } = getCurrentInstance();
 const route = useRoute();
@@ -37,7 +37,16 @@ const info = ref({});
 // const materialDetails = ref(null);
 const projectOptions = ref([])
 
+/**
+ * 页面初始化
+ */
 function init() {
+  info.value = {
+    projectId: "",
+    planName: "",
+    remark: ""
+  };
+
   listProjectInfo({
     pageNum: 1,
     pageSize: 100}).then(response => {
@@ -47,15 +56,32 @@ function init() {
   // 更新回显~
   if (planId) {
     getMaterialPlan(planId).then(res => {
-      info.value = res.data;
+      if (res && res.code == 200 && res.data) {
+        let data = Object.assign({}, res.data);
+
+        info.value = {
+          project : {id: data.projectId, projectName:data.projectName},
+          planName: data.planName,
+          remark: data.remark
+        }
+      } else {
+        proxy.$modal.msgError("当前计划信息无法打开！！");
+        close();
+      }
     });
   }
 }
 
+/**
+ * 提交表单
+ * @param type
+ */
 function submitForm(type) {
   const submitType = type;
 
+  // 基本信息表单
   const baseForm = proxy.$refs.baseInfo.$refs.planFormRef;
+  // 要货计划详情列表
   const detailTable = proxy.$refs.materialDetails.$refs.detailTableRef.data;
 
   Promise.all([baseForm].map(getFormPromise)).then((res) => {
@@ -63,13 +89,16 @@ function submitForm(type) {
 
     if (validateResult) {
       const planInfo = Object.assign({}, info.value);
+      planInfo.projectId = planInfo.project.id;
+      planInfo.projectName = planInfo.project.projectName;
+
       let detailList = Object.assign([], toRaw(detailTable));
       detailList.forEach(i => {
-        if (i.materialName) {
-          let materialInfo = i.materialName;
+        if (i.material) {
+          let materialInfo = i.material;
           i.materialName = materialInfo.materialName;
           i.materialSpec = materialInfo.materialSpec;
-          i.materialUnitCode = materialInfo.materialUnitCode;
+          i.materialUnit = materialInfo.materialUnit;
           i.materialUnitName = materialInfo.materialUnitName;
         }
       })
@@ -80,12 +109,29 @@ function submitForm(type) {
       }
 
       planInfo.detailList = detailList;
-      updateMaterialPlan(planInfo).then(res => {
-        proxy.$modal.msgSuccess(res.msg);
-        if (res.code === 200) {
-          close();
-        }
-      });
+      planInfo.submitType = submitType;
+
+      if (planId) {
+        planInfo.planId = planId;
+        updateMaterialPlan(planInfo).then(res => {
+          proxy.$modal.msgSuccess(res.msg);
+          if (res.code === 200) {
+            proxy.$modal.msgSuccess("操作成功");
+            close();
+          } else {
+            proxy.$modal.msgError("操作异常");
+          }
+        });
+      } else {
+        addMaterialPlan(planInfo).then(res => {
+          if (res.code === 200) {
+            proxy.$modal.msgSuccess("操作成功");
+            close();
+          } else {
+            proxy.$modal.msgError("操作异常");
+          }
+        })
+      }
     } else {
       activeName.value = "baseTab";
       proxy.$modal.msgError("表单校验未通过，请重新检查提交内容");
@@ -93,6 +139,9 @@ function submitForm(type) {
   });
 }
 
+/**
+ * 关闭页面
+ */
 function close() {
   const obj = { path: "/material/material/plan", query: { t: Date.now(), pageNum: route.query.pageNum } };
   proxy.$tab.closeOpenPage(obj);
@@ -105,9 +154,8 @@ function getFormPromise(form) {
     });
   });
 }
-onMounted(() => {
-  init();
-});
+
+init();
 
 
 </script>

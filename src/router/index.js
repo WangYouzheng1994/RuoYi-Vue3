@@ -166,11 +166,11 @@ export const dynamicRoutes = [
     permissions: ['tool:gen:edit'],
     children: [
       {
-        path: 'planDetail/:id(\\d+)',
+        path: 'planDetail/:id(\\d+)?',
         component: () => import('@/views/material/plan/planDetail'),
         name: 'materialPlanDetail',
         // meta: { title: '修改项目干系人', activeMenu: '/base/project' }
-        meta: { title: '修改项目干系人', activeMenu: '/material/plan/'}
+        meta: { title: '编辑项目要货计划', activeMenu: '/material/plan/'}
       }
     ]
   },

@@ -5,21 +5,13 @@
   <div>
     <el-table ref="detailTableRef" :max-height="tableHeight" :data="tableData" table-layout="auto" stripe border >
       <el-table-column type="selection" width="55" align="center"/>
-      <!--      <el-table-column label="序号" type="index" width="50" align="center">
-              <template #default="scope">
-                <span>{{(queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1}}</span>
-              </template>
-            </el-table-column>-->
-      <!--      <el-table-column label="" align="center" prop="id"/>-->
-      <el-table-column label="项目名称" align="center" prop="projectName"/>
-      <!--      <el-table-column label="项目id" align="center" prop="projectId"/>-->
-      <el-table-column label="项目经理" align="center" prop="projectManagerName"/>
-      <!--      <el-table-column label="项目经理id" align="center" prop="projectManagerId"/>-->
-      <!--      <el-table-column label="要货计划id" align="center" prop="planId"/>-->
-      <el-table-column label="计划名称" align="center" prop="planName"/>
-      <el-table-column width="220" label="物料名称" align="center" prop="materialName">
+      <el-table-column width="220" label="物料名称" align="center" prop="material">
         <template #default="scope">
-          <el-select value-key="userId" v-model="scope.row.materialName" style="width:100%">
+          <el-select value-key="id" v-model="scope.row.material" style="width:100%" @change="(selected)=> {
+            scope.row.materialId = selected.id;
+            scope.row.materialUnitCode = selected.materialUnitCode;
+          }">
+<!--            @change="onchange($event, scope)"-->
             <el-option
                 v-for="item in materialOptions"
                 :key="item.id"
@@ -28,12 +20,10 @@
                 :disabled="item.status == 1"
             >
               <span style="float: left">{{ item.materialName + item.materialSpec + item.materialUnitName }}}</span>
-              <span
-                  style="
+              <span style="
           float: right;
           color: var(--el-text-color-secondary);
-          font-size: 13px;"
-              >{{ item.value }}</span>
+          font-size: 13px;">{{ item.value }}</span>
             </el-option>
           </el-select>
         </template>
@@ -41,12 +31,13 @@
 
       <el-table-column label="物料规格" align="center" prop="materialSpec" width="110" resizable>
         <template #default="scope">
-          {{ scope.row.materialName ? scope.row.materialName.materialSpec : '' }}
+          {{ scope.row.material ? scope.row.material.materialSpec : '' }}
         </template>
       </el-table-column>
-      <el-table-column label="物料单位" align="center" prop="materialUnit" resizable>
+      <el-table-column label="物料单位" align="center" prop="materialUnitName" resizable>
         <template #default="scope">
-          {{ scope.row.materialName ? scope.row.materialName.materialUnitName : '' }}
+          {{ scope.row.material ? scope.row.material.materialUnitName : '' }}
+<!--          {{ scope.row.material ? scope.row.materialUnitCode : '' }}-->
         </template>
       </el-table-column>
       <el-table-column label="物料数量" align="center" prop="materialNumber" width="210" resizable>
@@ -100,7 +91,6 @@ let definePropsObj = defineProps({
 });
 
 import dayjs from 'dayjs';
-import {listProjectInfo} from "@/api/base/info.js";
 import {listMaterial} from '@/api/base/material.js';
 import {listMaterialPlanDetail} from "@/api/material/detail.js";
 
@@ -125,6 +115,8 @@ const deleteRow = (index) => {
 }
 
 function init() {
+  tableData.value = [];
+
   listMaterial({
     pageNum: 1,
     pageSize: 1000
@@ -132,12 +124,25 @@ function init() {
     materialOptions.value = response.rows;
   });
 
-  listMaterialPlanDetail({
-    pageNum: 1,
-    pageSize: 100,
-    planId: definePropsObj.planId}).then(res => {
-    tableData.value = res.rows;
-  });
+  if (definePropsObj.planId) {
+    // 回显
+    listMaterialPlanDetail({
+      pageNum: 1,
+      pageSize: 100,
+      planId: definePropsObj.planId}).then(res => {
+      let rows = res.rows;
+      rows.forEach(row => {
+        row.material = {
+          id: row.materialId,
+          materialName: row.materialName,
+          materialSpec: row.materialSpec,
+          materialUnitName: row.materialUnitName,
+          materialUnitCode: row.materialUnitCode,
+        }
+      })
+      tableData.value = rows
+    });
+  }
 }
 
 init();

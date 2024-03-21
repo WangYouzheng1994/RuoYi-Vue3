@@ -20,7 +20,7 @@ export function getMaterialPlanDetail(id) {
 // 新增要货计划明细
 export function addMaterialPlanDetail(data) {
   return request({
-    url: '/system/detail',
+    url: '/material/plan/detail',
     method: 'post',
     data: data
   })
