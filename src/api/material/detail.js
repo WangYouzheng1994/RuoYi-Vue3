@@ -42,3 +42,11 @@ export function delMaterialPlanDetail(id) {
     method: 'delete'
   })
 }
+
+// 根据计划id，获取该计划的要货明细
+export function getPlanMaterialList(planId) {
+  return request({
+    url: '/material/plan/detail/getPlanMaterialList/' + planId,
+    method: 'get'
+  })
+}

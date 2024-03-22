@@ -1,6 +1,7 @@
 <script setup>
 import { listMaterialPlanDetail } from "@/api/material/detail.js";
 import {listUser} from "@/api/system/user.js";
+import {getPlanMaterialList} from '@/api/material/detail.js';
 
 const props = defineProps({
   planId: {
@@ -35,8 +36,9 @@ function onDialogOpen() {
 
 function init() {
   // 初始化物料下拉框
-  listMaterialPlanDetail({planId: props.planId}).then((res) => {
-    planMaterialDetailOptions.value = res.row;
+  getPlanMaterialList(props.planId).then((res) => {
+    debugger;
+    planMaterialDetailOptions.value = res.data;
   });
 
   // 获取人员清单
@@ -81,12 +83,12 @@ defineExpose({
           <el-option
               v-for="item in planMaterialDetailOptions"
               :key="item.id"
-              :label="item.materialName"
+              :label="item.materialName + item.materialSpec + item.materialUnitName"
               :value="item"
               :disabled="item.status == 1"
           >
             <span style="float: left">{{ item.materialName + item.materialSpec + item.materialUnitName }}}</span>
-            <span style="float: right;color: var(--el-text-color-secondary);font-size: 13px;">{{ item.value }}</span>
+<!--            <span style="float: right;color: var(&#45;&#45;el-text-color-secondary);font-size: 13px;">{{ item.value }}</span>-->
           </el-option>
         </el-select>
       </el-form-item>
