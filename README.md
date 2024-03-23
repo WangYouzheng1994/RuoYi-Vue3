@@ -122,3 +122,6 @@ https://blog.csdn.net/Kratial/article/details/134449445
 
 defineProps
 https://static.kancloud.cn/cyyspring/vue3/2748005
+
+
+git config --global http.proxy 127.0.0.1:7890
