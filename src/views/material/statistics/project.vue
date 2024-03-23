@@ -125,7 +125,7 @@
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="detailList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="detailList" @selection-change="handleSelectionChange" :row-class-name="tableRowClassName">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="项目名称" align="center" prop="projectName"/>
       <el-table-column label="物料名称" align="center" prop="materialName"/>
@@ -196,6 +196,14 @@ const data = reactive({
   rules: {}
 });
 
+const tableRowClassName = (row, rowIndex, data) => {
+  debugger;
+  if (row.row.waitSendNumber < 0) {
+    return 'warning-row'
+  }
+  return ''
+}
+
 const {queryParams, form, rules} = toRefs(data);
 
 /** 查询入库明细列表 */
@@ -236,3 +244,9 @@ function handleExport() {
 
 getList();
 </script>
+
+<style>
+.el-table .warning-row {
+  --el-table-tr-bg-color: var(--el-color-danger-light-5);
+}
+</style>
