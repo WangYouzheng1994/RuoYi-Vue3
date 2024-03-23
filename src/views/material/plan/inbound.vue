@@ -10,6 +10,8 @@ const props = defineProps({
   }
 });
 
+const {getList} = inject('parent_index');
+
 const shortcuts = [
   {
     text: '今天',
@@ -47,7 +49,8 @@ const data = reactive({
   rules: {
     material: [{ required: true, message: "请选择入库物料", trigger: "blur" }],
     materialNumber: [{ required: true, message: "请录入入库数量", trigger: "blur" }],
-    selectUser: [{ required: true, message: "请选择验收人员", trigger: "change"}]
+    selectUser: [{ required: true, message: "请选择验收人员", trigger: "blur"}],
+    inboundDate: [{ required: true, message: "请选择入库时间", trigger: "blur"}]
   }
 });
 
@@ -108,16 +111,20 @@ function submitForm() {
   proxy.$refs["detailRef"].validate(valid => {
     if (valid) {
       let submitObj = Object.assign({}, form.value);
-      debugger;
       // 要货计划
       submitObj.planId = props.planId;
       // 接货人
       submitObj.inboundPerson = submitObj.selectUser.userName;
       submitObj.inboundPersonId = submitObj.selectUser.userId;
-      //
+      // 物料
+      submitObj.materialId = submitObj.material.materialId;
+      submitObj.materialName = submitObj.material.materialName;
+      submitObj.materialSpec = submitObj.material.materialSpec;
+      submitObj.materialUnit = submitObj.material.materialUnitName;
+      submitObj.materiaUnitCode = submitObj.material.materialUnitCode;
       addInboundDetail(submitObj).then(response => {
         proxy.$modal.msgSuccess("新增成功");
-        open.value = false;
+        openInbound.value = false;
         getList();
       });
     }
@@ -149,17 +156,15 @@ defineExpose({
       </el-form-item>
       <el-form-item label="本次入库数量" prop="materialNumber">
         <el-input-number v-model="form.materialNumber" :min="1" :precision="2" step="0.01" placeholder="请输入本次入库数量" style="width: 100%" />
-
 <!--        <el-input v-model="form.planName" placeholder="当前剩余库存" style="width: 50%"  />-->
       </el-form-item>
 
-      <el-form-item label="入库时间">
+      <el-form-item label="入库时间" prop="inboundDate">
         <el-date-picker style="width: 100%"
             v-model="form.inboundDate"
             type="datetime"
             placeholder="选择入库时间"
-            :shortcuts="shortcuts"
-        />
+            :shortcuts="shortcuts"/>
       </el-form-item>
 
       <el-form-item label="入库验收人员" prop="selectUser">

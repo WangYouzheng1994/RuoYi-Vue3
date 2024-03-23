@@ -7,7 +7,10 @@ let definePropsObj = defineProps({
   info: {
   },
   projectOptions: [],
-  disabled: true
+  disabled: {
+    readonly: true,
+    type:Boolean
+  }
 });
 
 const rules = ref({

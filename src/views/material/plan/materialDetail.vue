@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column label="物料数量" align="center" prop="materialNumber" width="210" resizable>
         <template #default="scope">
-          <el-input-number :disabled = "definePropsObj.disabled" v-model="scope.row.materialNumber" :min="1" @change="handleChange"/>
+          <el-input-number :disabled = "definePropsObj.disabled" v-model="scope.row.materialNumber" :min="1"/>
         </template>
       </el-table-column>
       <el-table-column label="最晚进场时间" align="center" prop="entryDeadlineDate" width="250" resizable>
@@ -89,7 +89,10 @@
 <script setup>
 let definePropsObj = defineProps({
   planId: "",
-  disabled: true
+  disabled: {
+    type:Boolean,
+    readonly: true
+  }
 });
 
 import dayjs from 'dayjs';

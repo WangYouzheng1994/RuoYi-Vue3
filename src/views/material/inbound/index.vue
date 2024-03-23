@@ -65,14 +65,6 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="物料单位code" prop="materiaUnitCode">
-        <el-input
-          v-model="queryParams.materiaUnitCode"
-          placeholder="请输入物料单位code"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="物料数量" prop="materialNumber">
         <el-input
           v-model="queryParams.materialNumber"
@@ -156,30 +148,25 @@
     <el-table v-loading="loading" :data="detailList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="" align="center" prop="id" />
-      <el-table-column label="物料名称" align="center" prop="projectName" />
-      <el-table-column label="物料规格" align="center" prop="projectId" />
-      <el-table-column label="要货计划id" align="center" prop="planId" />
+      <el-table-column label="项目名称" align="center" prop="projectName" />
       <el-table-column label="要货计划" align="center" prop="planName" />
-      <el-table-column label="物料id" align="center" prop="materialId" />
       <el-table-column label="物料名称" align="center" prop="materialName" />
       <el-table-column label="物料规格" align="center" prop="materialSpec" />
       <el-table-column label="物料单位" align="center" prop="materialUnit" />
-      <el-table-column label="物料单位code" align="center" prop="materiaUnitCode" />
       <el-table-column label="物料数量" align="center" prop="materialNumber" />
       <el-table-column label="接货人" align="center" prop="inboundPerson" />
-      <el-table-column label="接货人id" align="center" prop="inboundPersonId" />
       <el-table-column label="接货时间" align="center" prop="inboundDate" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.inboundDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+<!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:detail:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:detail:remove']">删除</el-button>
+&lt;!&ndash;          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:detail:edit']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:detail:remove']">删除</el-button>&ndash;&gt;
         </template>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
     
     <pagination

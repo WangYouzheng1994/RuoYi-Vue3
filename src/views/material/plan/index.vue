@@ -180,6 +180,9 @@ import Outbound from "@/views/material/plan/outbound.vue";
 
 const { proxy } = getCurrentInstance();
 
+provide('parent_index', {getList});
+// https://blog.csdn.net/weixin_42257731/article/details/127465103
+
 const { material_plan_commit } = proxy.useDict("material_plan_commit");
 const planList = ref([]);
 const open = ref(false);
@@ -269,7 +272,7 @@ function handleAdd() {
   open.value = true;
   title.value = "添加要货计划";*/
 
-  router.push({ path: "/material/plan/planDetail" , query: {pageNum: queryParams.value.pageNum}});
+  router.push({ path: "/material/plan/planDetail" , query: {pageNum: queryParams.value.pageNum, disabled: false}});
 }
 
 /** 修改按钮操作 */

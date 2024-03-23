@@ -31,7 +31,7 @@ import {addMaterialPlan, getMaterialPlan, updateMaterialPlan} from "@/api/materi
 const { proxy } = getCurrentInstance();
 const route = useRoute();
 const planId = route.params && route.params.id
-const disabled = route.query? route.query.disabled : true
+const disabled = route.query? JSON.parse(route.query.disabled) : true
 
 const activeName = ref("baseTab");
 const info = ref({});
