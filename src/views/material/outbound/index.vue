@@ -9,22 +9,22 @@
             @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="项目id" prop="projectId">
-        <el-input
-            v-model="queryParams.projectId"
-            placeholder="请输入项目id"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="要货计划id" prop="planId">
-        <el-input
-            v-model="queryParams.planId"
-            placeholder="请输入要货计划id"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="项目id" prop="projectId">-->
+<!--        <el-input-->
+<!--            v-model="queryParams.projectId"-->
+<!--            placeholder="请输入项目id"-->
+<!--            clearable-->
+<!--            @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="要货计划id" prop="planId">-->
+<!--        <el-input-->
+<!--            v-model="queryParams.planId"-->
+<!--            placeholder="请输入要货计划id"-->
+<!--            clearable-->
+<!--            @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="要货计划" prop="planName">
         <el-input
             v-model="queryParams.planName"
@@ -33,14 +33,14 @@
             @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="物料id" prop="materialId">
-        <el-input
-            v-model="queryParams.materialId"
-            placeholder="请输入物料id"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="物料id" prop="materialId">-->
+<!--        <el-input-->
+<!--            v-model="queryParams.materialId"-->
+<!--            placeholder="请输入物料id"-->
+<!--            clearable-->
+<!--            @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="物料名称" prop="materialName">
         <el-input
             v-model="queryParams.materialName"
@@ -65,14 +65,14 @@
             @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="物料单位code" prop="materiaUnitCode">
-        <el-input
-            v-model="queryParams.materiaUnitCode"
-            placeholder="请输入物料单位code"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="物料单位code" prop="materiaUnitCode">-->
+<!--        <el-input-->
+<!--            v-model="queryParams.materiaUnitCode"-->
+<!--            placeholder="请输入物料单位code"-->
+<!--            clearable-->
+<!--            @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="出库数量" prop="materialNumber">
         <el-input
             v-model="queryParams.materialNumber"
@@ -89,14 +89,14 @@
             @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="出库人id" prop="outboundPersonId">
-        <el-input
-            v-model="queryParams.outboundPersonId"
-            placeholder="请输入出库人id"
-            clearable
-            @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="出库人id" prop="outboundPersonId">-->
+<!--        <el-input-->
+<!--            v-model="queryParams.outboundPersonId"-->
+<!--            placeholder="请输入出库人id"-->
+<!--            clearable-->
+<!--            @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="接货时间" prop="outboundDate">
         <el-date-picker clearable
                         v-model="queryParams.outboundDate"
@@ -120,7 +120,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+<!--      <el-col :span="1.5">
         <el-button
             type="primary"
             plain
@@ -151,7 +151,7 @@
             v-hasPermi="['system:detail:remove']"
         >删除
         </el-button>
-      </el-col>
+      </el-col>-->
       <el-col :span="1.5">
         <el-button
             type="warning"
@@ -167,19 +167,16 @@
 
     <el-table v-loading="loading" :data="detailList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="" align="center" prop="id"/>
       <el-table-column label="项目名称" align="center" prop="projectName"/>
-      <el-table-column label="项目id" align="center" prop="projectId"/>
-      <el-table-column label="要货计划id" align="center" prop="planId"/>
+<!--      <el-table-column label="项目id" align="center" prop="projectId"/>-->
+<!--      <el-table-column label="要货计划id" align="center" prop="planId"/>-->
       <el-table-column label="要货计划" align="center" prop="planName"/>
-      <el-table-column label="物料id" align="center" prop="materialId"/>
+<!--      <el-table-column label="物料id" align="center" prop="materialId"/>-->
       <el-table-column label="物料名称" align="center" prop="materialName"/>
       <el-table-column label="物料规格" align="center" prop="materialSpec"/>
       <el-table-column label="物料单位" align="center" prop="materialUnit"/>
-      <el-table-column label="物料单位code" align="center" prop="materiaUnitCode"/>
       <el-table-column label="出库数量" align="center" prop="materialNumber"/>
       <el-table-column label="出库人" align="center" prop="outboundPerson"/>
-      <el-table-column label="出库人id" align="center" prop="outboundPersonId"/>
       <el-table-column label="接货时间" align="center" prop="outboundDate" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.outboundDate, '{y}-{m}-{d}') }}</span>
@@ -272,7 +269,7 @@
 </template>
 
 <script setup name="Detail">
-import {addDetail, delDetail, getDetail, listDetail, updateDetail} from "@/api/system/detail";
+import {addOutboundDetail, delOutboundDetail, getOutboundDetail, listOutboundDetail, updateOutboundDetail} from "@/api/material/outbound";
 
 const {proxy} = getCurrentInstance();
 
@@ -314,7 +311,7 @@ const {queryParams, form, rules} = toRefs(data);
 /** 查询入库明细列表 */
 function getList() {
   loading.value = true;
-  listDetail(queryParams.value).then(response => {
+  listOutboundDetail(queryParams.value).then(response => {
     detailList.value = response.rows;
     total.value = response.total;
     loading.value = false;
@@ -384,7 +381,7 @@ function handleAdd() {
 function handleUpdate(row) {
   reset();
   const _id = row.id || ids.value
-  getDetail(_id).then(response => {
+  getOutboundDetail(_id).then(response => {
     form.value = response.data;
     open.value = true;
     title.value = "修改入库明细";
@@ -396,13 +393,13 @@ function submitForm() {
   proxy.$refs["detailRef"].validate(valid => {
     if (valid) {
       if (form.value.id != null) {
-        updateDetail(form.value).then(response => {
+        updateOutboundDetail(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
           getList();
         });
       } else {
-        addDetail(form.value).then(response => {
+        addOutboundDetail(form.value).then(response => {
           proxy.$modal.msgSuccess("新增成功");
           open.value = false;
           getList();
@@ -416,7 +413,7 @@ function submitForm() {
 function handleDelete(row) {
   const _ids = row.id || ids.value;
   proxy.$modal.confirm('是否确认删除入库明细编号为"' + _ids + '"的数据项？').then(function () {
-    return delDetail(_ids);
+    return delOutboundDetail(_ids);
   }).then(() => {
     getList();
     proxy.$modal.msgSuccess("删除成功");

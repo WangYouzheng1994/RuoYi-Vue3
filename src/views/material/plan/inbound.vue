@@ -70,6 +70,7 @@ function onDialogOpen() {
 }
 
 function init() {
+  reset();
   // 初始化物料下拉框
   getPlanMaterialList(props.planId).then((res) => {
     planMaterialDetailOptions.value = res.data;

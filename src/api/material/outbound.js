@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 查询入库明细列表
-export function listDetail(query) {
+export function listOutboundDetail(query) {
   return request({
     url: '/material/outbound/detail/list',
     method: 'get',
@@ -10,7 +10,7 @@ export function listDetail(query) {
 }
 
 // 查询入库明细详细
-export function getDetail(id) {
+export function getOutboundDetail(id) {
   return request({
     url: '/material/outbound/detail/' + id,
     method: 'get'
@@ -18,7 +18,7 @@ export function getDetail(id) {
 }
 
 // 新增入库明细
-export function addDetail(data) {
+export function addOutboundDetail(data) {
   return request({
     url: '/material/outbound/detail',
     method: 'post',
@@ -27,7 +27,7 @@ export function addDetail(data) {
 }
 
 // 修改入库明细
-export function updateDetail(data) {
+export function updateOutboundDetail(data) {
   return request({
     url: '/material/outbound/detail',
     method: 'put',
@@ -36,7 +36,7 @@ export function updateDetail(data) {
 }
 
 // 删除入库明细
-export function delDetail(id) {
+export function delOutboundDetail(id) {
   return request({
     url: '/material/outbound/detail/' + id,
     method: 'delete'

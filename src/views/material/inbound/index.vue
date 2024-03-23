@@ -17,14 +17,14 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="要货计划id" prop="planId">
+<!--      <el-form-item label="要货计划id" prop="planId">
         <el-input
           v-model="queryParams.planId"
           placeholder="请输入要货计划id"
           clearable
           @keyup.enter="handleQuery"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="要货计划" prop="planName">
         <el-input
           v-model="queryParams.planName"
@@ -33,14 +33,14 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="物料id" prop="materialId">
+<!--      <el-form-item label="物料id" prop="materialId">
         <el-input
           v-model="queryParams.materialId"
           placeholder="请输入物料id"
           clearable
           @keyup.enter="handleQuery"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="物料名称" prop="materialName">
         <el-input
           v-model="queryParams.materialName"
@@ -81,14 +81,14 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="接货人id" prop="inboundPersonId">
+<!--      <el-form-item label="接货人id" prop="inboundPersonId">
         <el-input
           v-model="queryParams.inboundPersonId"
           placeholder="请输入接货人id"
           clearable
           @keyup.enter="handleQuery"
         />
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="接货时间" prop="inboundDate">
         <el-date-picker clearable
           v-model="queryParams.inboundDate"
@@ -104,7 +104,7 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
+<!--      <el-col :span="1.5">
         <el-button
           type="primary"
           plain
@@ -132,7 +132,7 @@
           @click="handleDelete"
           v-hasPermi="['system:detail:remove']"
         >删除</el-button>
-      </el-col>
+      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -147,7 +147,7 @@
 
     <el-table v-loading="loading" :data="detailList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="" align="center" prop="id" />
+<!--      <el-table-column label="" align="center" prop="id" />-->
       <el-table-column label="项目名称" align="center" prop="projectName" />
       <el-table-column label="要货计划" align="center" prop="planName" />
       <el-table-column label="物料名称" align="center" prop="materialName" />
