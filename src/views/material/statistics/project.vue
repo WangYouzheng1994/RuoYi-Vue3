@@ -127,7 +127,7 @@
 
     <el-table v-loading="loading" :data="detailList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="项目名称" align="center" prop="materialName"/>
+      <el-table-column label="项目名称" align="center" prop="projectName"/>
       <el-table-column label="物料名称" align="center" prop="materialName"/>
       <el-table-column label="物料规格" align="center" prop="materialSpec"/>
       <el-table-column label="物料单位" align="center" prop="materialUnitName"/>
@@ -159,7 +159,7 @@
 </template>
 
 <script setup name="Detail">
-import {listStatisticsMaterialList} from "@/api/material/statistics.js";
+import {listStatisticsMaterialList, listStatisticsProjectMaterialList} from "@/api/material/statistics.js";
 
 const {proxy} = getCurrentInstance();
 
@@ -201,7 +201,7 @@ const {queryParams, form, rules} = toRefs(data);
 /** 查询入库明细列表 */
 function getList() {
   loading.value = true;
-  listStatisticsMaterialList(queryParams.value).then(response => {
+  listStatisticsProjectMaterialList(queryParams.value).then(response => {
     detailList.value = response.rows;
     total.value = response.total;
     loading.value = false;
