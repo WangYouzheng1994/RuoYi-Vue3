@@ -17,7 +17,7 @@ const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
   baseURL: import.meta.env.VITE_APP_BASE_API,
   // 超时
-  timeout: 10000
+  timeout: 150000
 })
 
 // request拦截器
@@ -36,6 +36,11 @@ service.interceptors.request.use(config => {
     config.params = {};
     config.url = url;
   }
+  // 如果是formdata类型，调整请求头为multipart/form-data
+  if (config.data && config.data instanceof FormData) {
+    config.headers['Content-Type'] = 'multipart/form-data;boundary = ' + new Date().getTime()
+  }
+
   if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
     const requestObj = {
       url: config.url,
@@ -148,5 +153,4 @@ export function download(url, params, filename, config) {
     downloadLoadingInstance.close();
   })
 }
-
 export default service

@@ -95,7 +95,7 @@
 <!--      <el-table-column label="${comment}" align="center" prop="id" />-->
       <el-table-column label="物料名称" align="center" prop="materialName" />
       <el-table-column label="物料规格" align="center" prop="materialSpec" />
-      <el-table-column label="物料单位字典码" align="center" prop="materialUnitCode" />
+<!--      <el-table-column label="物料单位字典码" align="center" prop="materialUnitCode" />-->
       <el-table-column label="物料单位名称" align="center" prop="materialUnitName" >
         <template #default="scope">
           <dict-tag :options="material_unit" :value="scope.row.materialUnitCode" />
@@ -140,12 +140,12 @@
           ></el-option>&ndash;&gt;
         </el-form-item>-->
         <el-form-item label="物料单位" prop="materialUnitName">
-          <el-select v-model="form.materialUnitCode" placeholder="请选择">
+          <el-select value-key="value" v-model="form.materialUnitCodeSelect" placeholder="请选择" style="width: 100%">
             <el-option
                 v-for="dict in material_unit"
                 :key="dict.value"
                 :label="dict.label"
-                :value="dict.value"
+                :value="dict"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -215,6 +215,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
+
 
 const data = reactive({
   form: {},
@@ -323,14 +324,19 @@ function handleUpdate(row) {
 function submitForm() {
   proxy.$refs["materialRef"].validate(valid => {
     if (valid) {
+
+      let submitObj = Object.assign({}, form.value);
+      submitObj.materialUnitCode = submitObj.materialUnitCodeSelect.value;
+      submitObj.materialUnitName = submitObj.materialUnitCodeSelect.label;
+
       if (form.value.id != null) {
-        updateMaterial(form.value).then(response => {
+        updateMaterial(submitObj).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
           getList();
         });
       } else {
-        addMaterial(form.value).then(response => {
+        addMaterial(submitObj).then(response => {
           proxy.$modal.msgSuccess("新增成功");
           open.value = false;
           getList();

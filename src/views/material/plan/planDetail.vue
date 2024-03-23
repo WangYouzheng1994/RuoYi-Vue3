@@ -5,18 +5,18 @@
     <el-card>
       <el-tabs v-model="activeName">
         <el-tab-pane label="基本信息" name="baseTab">
-          <base-info-form ref="baseInfo" :info="info" :projectOptions="projectOptions" />
+          <base-info-form ref="baseInfo" :info="info" :projectOptions="projectOptions" :disabled="disabled"  />
         </el-tab-pane>
         <el-tab-pane label="计划详情" name="materialDetailTab">
-          <material-detail ref="materialDetails" :planId="planId"/>
+          <material-detail ref="materialDetails" :planId="planId" :disabled="disabled" />
         </el-tab-pane>
       </el-tabs>
       <el-form label-width="100px">
         <div style="text-align: center;margin-left:-100px;margin-top:10px;">
-          <el-button type="primary" @click="submitForm('submit')">提报计划</el-button>
-          <el-button type="primary" @click="submitForm('save')">保存</el-button>
+          <el-button type="primary" @click="submitForm('submit')" v-if="!disabled">提报计划</el-button>
+          <el-button type="primary" @click="submitForm('save')" v-if="!disabled">保存</el-button>
           <el-button @click="close()">返回</el-button>
-          <el-button type="info">打印要货计划</el-button>
+          <el-button type="info" @click="() => {proxy.$modal.msgError('功能未开放')}">打印要货计划</el-button>
         </div>
       </el-form>
     </el-card>
@@ -30,7 +30,8 @@ import {addMaterialPlan, getMaterialPlan, updateMaterialPlan} from "@/api/materi
 
 const { proxy } = getCurrentInstance();
 const route = useRoute();
-const planId = route.params && route.params.id;
+const planId = route.params && route.params.id
+const disabled = route.query? route.query.disabled : true
 
 const activeName = ref("baseTab");
 const info = ref({});

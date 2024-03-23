@@ -35,6 +35,16 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
+        <el-form-item label="提报状态" prop="commitStatus">
+          <el-select clearable v-model="queryParams.commitStatus" placeholder="请选择项目" style="width:100%" @keyup.enter="handleQuery">
+            <el-option
+                v-for="dict in material_plan_commit"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -51,7 +61,7 @@
           v-hasPermi="['system:plan:add']"
         >新增</el-button>
       </el-col>
-      <el-col :span="1.5">
+<!--      <el-col :span="1.5">
         <el-button
           type="success"
           plain
@@ -70,7 +80,7 @@
           @click="handleDelete"
           v-hasPermi="['system:plan:remove']"
         >删除</el-button>
-      </el-col>
+      </el-col>-->
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -108,10 +118,11 @@
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:plan:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:plan:remove']">删除</el-button>
-          <el-button link type="primary" icon="DArrowRight" @click="handleOpenInbound(scope.row)" v-hasPermi="['system:plan:remove']">入库</el-button>
-          <el-button link type="primary" icon="DArrowLeft" @click="handleOutbound(scope.row)" v-hasPermi="['system:plan:remove']">出库</el-button>
+          <el-button link type="primary" icon="Edit" v-if="scope.row.commitStatus == 0 " @click="handleUpdate(scope.row, false)" v-hasPermi="['system:plan:edit']">修改</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row, true)" v-hasPermi="['system:plan:edit']">查看</el-button>
+          <el-button link type="primary" icon="Delete" v-if="scope.row.commitStatus == 0 " @click="handleDelete(scope.row)" v-hasPermi="['system:plan:remove']">删除</el-button>
+          <el-button link type="primary" icon="DArrowRight" v-if="scope.row.commitStatus == 1" @click="handleOpenInbound(scope.row)" v-hasPermi="['system:plan:remove']">入库</el-button>
+          <el-button link type="primary" icon="DArrowLeft" v-if="scope.row.commitStatus == 1" @click="handleOutbound(scope.row)" v-hasPermi="['system:plan:remove']">出库</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -273,9 +284,9 @@ function handleAdd() {
 }*/
 
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row, isDisabled) {
   const tableId = row.id || ids.value[0];
-  router.push({ path: "/material/plan/planDetail/" + tableId, query: { pageNum: queryParams.value.pageNum } });
+  router.push({ path: "/material/plan/planDetail/" + tableId, query: { pageNum: queryParams.value.pageNum, disabled: isDisabled }});
 }
 
 /** 提交按钮 */
