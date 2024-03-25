@@ -1,172 +1,94 @@
 <script setup>
-// import VabChart from '@/plugins/echarts'
-
-const fwl = ref({
-  color: ['#1890FF', '#36CBCB', '#4ECB73', '#FBD437', '#F2637B', '#975FE5'],
-      backgroundColor: 'rgba(252,252,252,0)',
-      grid: {
-    top: '4%',
-        left: '2%',
-        right: '4%',
-        bottom: '0%',
-        containLabel: true,
-  },
-  xAxis: [
-    {
-      type: 'category',
-      boundaryGap: false,
-      data: [],
-      axisTick: {
-        alignWithLabel: true,
-      },
-    },
-  ],
-      yAxis: [
-    {
-      type: 'value',
-    },
-  ],
-      series: [
-    {
-      name: '访问量',
-      type: 'line',
-      data: [],
-      smooth: true,
-      areaStyle: {},
-    },
-  ],
-})
-
 </script>
 
 <template>
-  <div class="index-container">
-    <el-row :gutter="20">
-      <el-col :lg="6" :md="12" :sm="24" :xl="6" :xs="24">
-        <el-card shadow="never">
-          <div slot="header">
-            <span>访问量</span>
+<!--  <el-card class="introduce">
+    <div class="order">
+      <el-card class="order-item">
+        <template #header>
+          <div class="card-header">
+            <span>今日上报计划</span>
           </div>
-          <vab-chart autoresize :option="fwl"/>
-          <div class="bottom">
-            <span>
-              日均访问量:
-
-              {{ 12 }}
-            </span>
+        </template>
+        <div class="item">1888</div>
+      </el-card>
+      <el-card class="order-item">
+        <template #header>
+          <div class="card-header">
+            <span>今日入库操作数量</span>
           </div>
-        </el-card>
-      </el-col>
-
-      <el-col :lg="6" :md="12" :sm="24" :xl="6" :xs="24">
-        <el-card shadow="never">
-          <div slot="header">
-            <span>授权数</span>
+        </template>
+        <div class="item">36271</div>
+      </el-card>
+      <el-card class="order-item">
+        <template #header>
+          <div class="card-header">
+            <span>物料配送完成率</span>
           </div>
-          <vab-chart autoresize :option="sqs" />
-          <div class="bottom">
-            <span>
-              总授权数:
-              {{ 20 }}
-            </span>
+        </template>
+        <div class="item">20%</div>
+      </el-card>
+    </div>
+    <div id="zoom"></div>
+  </el-card>-->
+
+  <ElCard shadow="never">
+<!--    <ElSkeleton :loading="false" animated>-->
+      <ElRow :gutter="20" justify="space-between">
+        <ElCol :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
+          <div class="flex items-center">
+            <img
+                src="@/assets/imgs/avatar.jpg"
+                alt=""
+                class="w-70px h-70px rounded-[50%] mr-20px"
+            />
+            <div>
+              <div class="text-20px">
+                {{ "你好，Archer， 祝你工作愉快！"}}
+              </div>
+              <div class="mt-10px text-14px text-gray-500">
+                今日气温：22.22
+              </div>
+            </div>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
-
-
-  </div>
+        </ElCol>
+        <ElCol :xl="12" :lg="12" :md="12" :sm="24" :xs="24">
+          <div class="flex h-70px items-center justify-end lt-sm:mt-20px">
+            <div class="px-8px text-right">
+              <div class="text-14px text-gray-400 mb-20px">项目数</div>
+              <span>2000</span>
+            </div>
+            <ElDivider direction="vertical" />
+            <div class="px-8px text-right">
+              <div class="text-14px text-gray-400 mb-20px">要货计划</div>
+              <span>3000</span>
+            </div>
+            <ElDivider direction="vertical" border-style="dashed" />
+            <div class="px-8px text-right">
+              <div class="text-14px text-gray-400 mb-20px">啊啊啊啊</div>
+              <span>3000</span>
+            </div>
+          </div>
+        </ElCol>
+      </ElRow>
+<!--    </ElSkeleton>-->
+  </ElCard>
 
 </template>
 
 <style scoped lang="scss">
-.index-container {
-  padding: 0 !important;
-  margin: 0 !important;
-  background: #f5f7f8 !important;
-
-  ::v-deep {
-    .el-alert {
-      padding: 20px;
-
-      &--info.is-light {
-        min-height: 82px;
-        padding: 20px;
-        margin-bottom: 15px;
-        color: #909399;
-        background-color: #fff;
-        border: 1px solid #ebeef5;
-      }
-    }
-
-    .el-card__body {
-      .echarts {
-        width: 100%;
-        height: 115px;
-      }
-    }
-  }
-
-  .card {
-    ::v-deep {
-      .el-card__body {
-        .echarts {
-          width: 100%;
-          height: 305px;
-        }
-      }
-    }
-  }
-
-  .bottom {
-    padding-top: 20px;
-    margin-top: 5px;
-    color: #595959;
-    text-align: left;
-    border-top: 1px solid #dcdfe6;
-  }
-
-  .table {
-    width: 100%;
-    color: #666;
-    border-collapse: collapse;
-    background-color: #fff;
-
-    td {
-      position: relative;
-      min-height: 20px;
-      padding: 9px 15px;
-      font-size: 14px;
-      line-height: 20px;
-      border: 1px solid #e6e6e6;
-
-      &:nth-child(odd) {
-        width: 20%;
-        text-align: right;
-        background-color: #f7f7f7;
-      }
-    }
-  }
-
-  .icon-panel {
-    height: 117px;
-    text-align: center;
-    cursor: pointer;
-
-    svg {
-      font-size: 40px;
-    }
-
-    p {
-      margin-top: 10px;
-    }
-  }
-
-  .bottom-btn {
-    button {
-      margin: 5px 10px 15px 0;
-    }
-  }
+.introduce .order {
+  display: flex;
+  margin-bottom: 50px;
 }
-
+.introduce .order .order-item {
+  flex: 1;
+  margin-right: 20px;
+}
+.introduce .order .order-item:last-child{
+  margin-right: 0;
+}
+#zoom {
+  min-height: 300px;
+}
 </style>
